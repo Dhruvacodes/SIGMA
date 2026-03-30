@@ -6,62 +6,41 @@
     <title>SIGMA - Signal Intelligence & Guided Market Advisor</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --cyber-yellow: #FDE047;
             --deep-onyx: #0A0A0A;
             --charcoal: #171717;
             --deep-gray: #262626;
             --white: #FFFFFF;
+            --green: #22C55E;
+            --red: #EF4444;
         }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             background: var(--deep-onyx);
             min-height: 100vh;
             color: var(--white);
-            overflow-x: hidden;
         }
 
-        /* Liquid Hero Section */
+        /* Hero */
         .hero {
             background: var(--cyber-yellow);
-            min-height: 70vh;
+            padding: 40px 60px 100px;
+            border-radius: 0 0 80px 30px;
             position: relative;
-            padding: 40px 60px 120px;
-            border-radius: 0 0 120px 40px;
         }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: -60px;
-            right: 10%;
-            width: 200px;
-            height: 200px;
-            background: var(--cyber-yellow);
-            border-radius: 50%;
-            z-index: 1;
-        }
-
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 80px;
+            margin-bottom: 60px;
         }
-
         .logo {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-
         .logo-icon {
             width: 48px;
             height: 48px;
@@ -74,14 +53,11 @@
             font-weight: 800;
             color: var(--cyber-yellow);
         }
-
         .logo h1 {
             font-size: 24px;
             font-weight: 800;
             color: var(--deep-onyx);
-            letter-spacing: -0.5px;
         }
-
         .status-pill {
             display: flex;
             align-items: center;
@@ -93,7 +69,6 @@
             font-weight: 600;
             color: var(--cyber-yellow);
         }
-
         .status-dot {
             width: 8px;
             height: 8px;
@@ -101,222 +76,186 @@
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
-
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.1); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
-
         .hero-content {
-            max-width: 700px;
+            max-width: 600px;
         }
-
         .hero-label {
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--deep-onyx);
-            opacity: 0.6;
-            margin-bottom: 16px;
-        }
-
-        .hero-title {
-            font-size: clamp(48px, 8vw, 80px);
-            font-weight: 800;
-            color: var(--deep-onyx);
-            line-height: 0.95;
-            letter-spacing: -3px;
-            margin-bottom: 24px;
-        }
-
-        .hero-subtitle {
-            font-size: 18px;
-            color: var(--deep-onyx);
-            opacity: 0.7;
-            max-width: 500px;
-            line-height: 1.6;
-            margin-bottom: 40px;
-        }
-
-        .cta-group {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary {
-            background: var(--deep-onyx);
-            color: var(--white);
-            padding: 18px 36px;
-            border-radius: 100px;
-            font-size: 15px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-primary:hover {
-            transform: scale(1.05);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-
-        .btn-primary:active { transform: scale(0.95); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--deep-onyx);
-            padding: 18px 36px;
-            border-radius: 100px;
-            font-size: 15px;
-            font-weight: 600;
-            border: 2px solid rgba(0,0,0,0.2);
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .btn-outline:hover {
-            border-color: var(--deep-onyx);
-            background: rgba(0,0,0,0.05);
-        }
-
-        .glass-card {
-            position: absolute;
-            right: 60px;
-            top: 50%;
-            transform: translateY(-30%);
-            width: 380px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 32px;
-            padding: 32px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.3);
-            z-index: 10;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(-30%); }
-            50% { transform: translateY(-35%); }
-        }
-
-        .glass-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .glass-card-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--deep-onyx);
-        }
-
-        .glass-pill {
-            background: var(--cyber-yellow);
-            color: var(--deep-onyx);
-            padding: 6px 14px;
-            border-radius: 100px;
             font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .stats-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-box {
-            background: rgba(0,0,0,0.1);
-            padding: 20px;
-            border-radius: 16px;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--deep-onyx);
-            letter-spacing: -1px;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--deep-onyx);
-            opacity: 0.6;
-            margin-top: 4px;
-        }
-
-        .void-section {
-            background: var(--deep-onyx);
-            padding: 100px 60px 60px;
-            position: relative;
-            z-index: 5;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-
-        .section-title {
-            font-size: 14px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: var(--white);
-            opacity: 0.5;
+            color: var(--deep-onyx);
+            opacity: 0.6;
+            margin-bottom: 12px;
+        }
+        .hero-title {
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 800;
+            color: var(--deep-onyx);
+            line-height: 1;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+        }
+        .hero-subtitle {
+            font-size: 16px;
+            color: var(--deep-onyx);
+            opacity: 0.7;
+            line-height: 1.6;
+            margin-bottom: 32px;
         }
 
-        .alerts-grid {
+        /* Main Content */
+        .main-content {
+            padding: 60px;
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        @media (max-width: 1100px) {
+            .main-content { grid-template-columns: 1fr; padding: 30px; }
+        }
+
+        /* Sidebar - Portfolio */
+        .sidebar {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            min-height: 300px;
+            gap: 24px;
         }
-
-        .alert-card {
+        .card {
             background: var(--charcoal);
             border: 1px solid var(--deep-gray);
             border-radius: 24px;
             padding: 28px;
-            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-title span { font-size: 20px; }
+
+        /* Portfolio Holdings */
+        .holding-row {
+            display: grid;
+            grid-template-columns: 1fr 100px 120px;
+            gap: 12px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .holding-row label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 4px;
+            display: block;
+        }
+        .holding-row input {
+            width: 100%;
+            background: var(--deep-gray);
+            border: 1px solid transparent;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: var(--white);
+            font-size: 14px;
+            font-family: inherit;
+            font-weight: 500;
+        }
+        .holding-row input:focus {
+            outline: none;
+            border-color: var(--cyber-yellow);
+        }
+        .holding-row input::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        .add-btn {
+            background: transparent;
+            border: 1px dashed var(--deep-gray);
+            border-radius: 12px;
+            padding: 14px;
+            color: rgba(255,255,255,0.4);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+        .add-btn:hover {
+            border-color: var(--cyber-yellow);
+            color: var(--cyber-yellow);
         }
 
+        /* Run Button */
+        .run-btn {
+            background: var(--cyber-yellow);
+            color: var(--deep-onyx);
+            padding: 18px 32px;
+            border-radius: 100px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        .run-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(253, 224, 71, 0.3);
+        }
+        .run-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Results Section */
+        .results-section {
+            min-height: 500px;
+        }
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 24px;
+        }
+
+        /* Alert Cards - Expanded */
+        .alert-card {
+            background: var(--charcoal);
+            border: 1px solid var(--deep-gray);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
         .alert-card:hover {
             border-color: var(--cyber-yellow);
-            transform: translateX(8px);
         }
-
-        .alert-top {
+        .alert-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 16px;
         }
-
         .alert-ticker {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 800;
-            color: var(--white);
             letter-spacing: -1px;
         }
-
         .severity-badge {
             padding: 8px 16px;
             border-radius: 100px;
@@ -324,170 +263,188 @@
             font-weight: 700;
             text-transform: uppercase;
         }
-
-        .severity-URGENT { background: #FF3B30; color: white; }
+        .severity-URGENT { background: var(--red); color: white; }
         .severity-OPPORTUNITY { background: var(--cyber-yellow); color: var(--deep-onyx); }
-        .severity-WATCH { background: #FF9500; color: var(--deep-onyx); }
+        .severity-WATCH { background: #F59E0B; color: var(--deep-onyx); }
         .severity-INFORMATIONAL { background: var(--deep-gray); color: var(--white); }
 
         .alert-headline {
-            font-size: 15px;
-            color: rgba(255,255,255,0.7);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .alert-summary {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
             line-height: 1.6;
             margin-bottom: 20px;
         }
 
-        .alert-meta {
-            display: flex;
-            align-items: center;
-            gap: 24px;
+        /* Confidence & Direction */
+        .alert-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
         }
-
-        .confidence-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .metric-box {
+            background: var(--deep-gray);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
         }
-
-        .confidence-label {
-            font-size: 11px;
+        .metric-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--cyber-yellow);
+        }
+        .metric-value.bullish { color: var(--green); }
+        .metric-value.bearish { color: var(--red); }
+        .metric-label {
+            font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: rgba(255,255,255,0.4);
+            margin-top: 4px;
         }
 
-        .confidence-bar {
-            width: 100px;
-            height: 6px;
+        /* Reasoning Chain */
+        .reasoning-section {
             background: var(--deep-gray);
-            border-radius: 100px;
-            overflow: hidden;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
-
-        .confidence-fill {
-            height: 100%;
-            background: var(--cyber-yellow);
-            border-radius: 100px;
+        .reasoning-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--cyber-yellow);
+            margin-bottom: 16px;
         }
-
-        .confidence-value {
-            font-size: 14px;
+        .reasoning-step {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .reasoning-step:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .step-number {
+            width: 24px;
+            height: 24px;
+            background: var(--charcoal);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
             font-weight: 700;
             color: var(--cyber-yellow);
+            flex-shrink: 0;
+        }
+        .step-content {
+            flex: 1;
+        }
+        .step-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 4px;
+        }
+        .step-finding {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.5;
         }
 
+        /* Recommended Action */
+        .action-box {
+            background: rgba(253, 224, 71, 0.1);
+            border: 1px solid rgba(253, 224, 71, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+        }
+        .action-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--cyber-yellow);
+            margin-bottom: 8px;
+        }
+        .action-text {
+            font-size: 15px;
+            color: var(--white);
+            line-height: 1.6;
+        }
+
+        /* Empty & Loading States */
         .empty-state {
             text-align: center;
-            padding: 80px 40px;
+            padding: 100px 40px;
         }
-
-        .empty-icon { font-size: 64px; margin-bottom: 24px; opacity: 0.3; }
-        .empty-title { font-size: 24px; font-weight: 700; color: var(--white); margin-bottom: 12px; }
-        .empty-text { font-size: 15px; color: rgba(255,255,255,0.5); }
-
-        .portfolio-section {
-            background: var(--charcoal);
-            border-radius: 32px;
-            padding: 32px;
-            margin-top: 40px;
-        }
-
-        .portfolio-title { font-size: 18px; font-weight: 700; margin-bottom: 24px; }
-
-        .holdings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 12px;
-        }
-
-        .holding-input { display: flex; gap: 8px; }
-
-        .holding-input input {
-            flex: 1;
-            background: var(--deep-gray);
-            border: 1px solid transparent;
-            border-radius: 12px;
-            padding: 14px 16px;
-            color: var(--white);
-            font-size: 14px;
-            font-family: inherit;
-        }
-
-        .holding-input input:focus { outline: none; border-color: var(--cyber-yellow); }
-        .holding-input input::placeholder { color: rgba(255,255,255,0.3); }
-        .holding-input input[type="number"] { width: 80px; flex: none; }
-
-        .agents-section { margin-top: 60px; }
-
-        .agents-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 12px;
-        }
-
-        .agent-card {
-            background: var(--charcoal);
-            border: 1px solid var(--deep-gray);
-            border-radius: 20px;
-            padding: 24px 16px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .agent-card:hover { border-color: var(--cyber-yellow); transform: translateY(-4px); }
-        .agent-icon { font-size: 28px; margin-bottom: 12px; }
-        .agent-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7); }
-
-        footer { padding: 60px; text-align: center; }
-
-        .disclaimer {
-            max-width: 800px;
-            margin: 0 auto 32px;
-            padding: 24px;
-            background: rgba(253, 224, 71, 0.05);
-            border: 1px solid rgba(253, 224, 71, 0.2);
-            border-radius: 16px;
-            font-size: 11px;
-            color: rgba(255,255,255,0.5);
-            line-height: 1.8;
-        }
-
-        .footer-text { font-size: 13px; color: rgba(255,255,255,0.3); }
+        .empty-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.3; }
+        .empty-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .empty-text { font-size: 14px; color: rgba(255,255,255,0.5); }
 
         .spinner {
             width: 24px;
             height: 24px;
-            border: 3px solid rgba(255,255,255,0.2);
-            border-top-color: var(--white);
+            border: 3px solid rgba(0,0,0,0.2);
+            border-top-color: var(--deep-onyx);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
+            display: inline-block;
         }
-
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        @media (max-width: 1100px) {
-            .glass-card {
-                position: relative;
-                right: auto;
-                top: auto;
-                transform: none;
-                margin-top: 40px;
-                width: 100%;
-                max-width: 400px;
-                animation: none;
-            }
-            .hero { padding: 30px 30px 80px; }
-            .void-section { padding: 60px 30px; }
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 24px;
+            padding: 20px 24px;
+            background: var(--charcoal);
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .stat-item .value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--cyber-yellow);
+        }
+        .stat-item .label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
         }
 
-        @media (max-width: 900px) {
-            .agents-grid { grid-template-columns: repeat(3, 1fr); }
+        /* Disclaimer */
+        footer {
+            padding: 40px 60px;
+            text-align: center;
         }
-
-        @media (max-width: 600px) {
-            .hero-title { font-size: 40px; letter-spacing: -2px; }
-            .cta-group { flex-direction: column; }
-            .btn-primary, .btn-outline { width: 100%; justify-content: center; }
+        .disclaimer {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.4);
+            line-height: 1.8;
         }
     </style>
 </head>
@@ -503,131 +460,188 @@
                 System Online
             </div>
         </header>
-
         <div class="hero-content">
             <p class="hero-label">AI for Indian Investors</p>
-            <h2 class="hero-title">Market signals,<br>decoded.</h2>
-            <p class="hero-subtitle">6-agent AI system detecting breakouts, analyzing sentiment, and delivering actionable alerts with chain-of-thought reasoning.</p>
-            <div class="cta-group">
-                <button class="btn-primary" id="runBtn" onclick="runPipeline()">
-                    <span>▶</span> Run Analysis
-                </button>
-                <a href="/docs" class="btn-outline">API Docs</a>
-            </div>
-        </div>
-
-        <div class="glass-card">
-            <div class="glass-card-header">
-                <span class="glass-card-title">Pipeline Stats</span>
-                <span class="glass-pill">Live</span>
-            </div>
-            <div class="stats-row">
-                <div class="stat-box">
-                    <div class="stat-value" id="signalCount">—</div>
-                    <div class="stat-label">Signals</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="pipelineTime">—</div>
-                    <div class="stat-label">Duration</div>
-                </div>
-            </div>
-            <div class="stats-row">
-                <div class="stat-box">
-                    <div class="stat-value">6</div>
-                    <div class="stat-label">Agents</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value">70B</div>
-                    <div class="stat-label">LLM Params</div>
-                </div>
-            </div>
+            <h2 class="hero-title">Intelligent Market Analysis</h2>
+            <p class="hero-subtitle">Enter your portfolio holdings below. SIGMA's 6-agent AI pipeline will scan NSE for signals, analyze patterns, and deliver personalized recommendations.</p>
         </div>
     </section>
 
-    <section class="void-section">
-        <div class="section-header">
-            <span class="section-title">Market Alerts</span>
-        </div>
-
-        <div class="alerts-grid" id="alertsContainer">
-            <div class="empty-state">
-                <div class="empty-icon">📊</div>
-                <h3 class="empty-title">Ready to analyze</h3>
-                <p class="empty-text">Click "Run Analysis" to scan NSE for market signals</p>
-            </div>
-        </div>
-
-        <div class="portfolio-section">
-            <h3 class="portfolio-title">Your Portfolio</h3>
-            <div class="holdings-grid" id="holdingsGrid">
-                <div class="holding-input">
-                    <input type="text" placeholder="Ticker" id="ticker1" value="RELIANCE">
-                    <input type="number" placeholder="Qty" id="qty1" value="50">
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="card">
+                <h3 class="card-title"><span>💼</span> Your Portfolio</h3>
+                <div id="holdingsContainer">
+                    <div class="holding-row">
+                        <div>
+                            <label>Stock Ticker</label>
+                            <input type="text" id="ticker1" value="RELIANCE" placeholder="e.g. RELIANCE">
+                        </div>
+                        <div>
+                            <label>Quantity</label>
+                            <input type="number" id="qty1" value="50" placeholder="Qty">
+                        </div>
+                        <div>
+                            <label>Buy Price</label>
+                            <input type="number" id="price1" value="2400" placeholder="₹">
+                        </div>
+                    </div>
+                    <div class="holding-row">
+                        <div>
+                            <label>Stock Ticker</label>
+                            <input type="text" id="ticker2" value="TCS" placeholder="e.g. TCS">
+                        </div>
+                        <div>
+                            <label>Quantity</label>
+                            <input type="number" id="qty2" value="30" placeholder="Qty">
+                        </div>
+                        <div>
+                            <label>Buy Price</label>
+                            <input type="number" id="price2" value="3500" placeholder="₹">
+                        </div>
+                    </div>
+                    <div class="holding-row">
+                        <div>
+                            <label>Stock Ticker</label>
+                            <input type="text" id="ticker3" value="HDFCBANK" placeholder="e.g. HDFC">
+                        </div>
+                        <div>
+                            <label>Quantity</label>
+                            <input type="number" id="qty3" value="40" placeholder="Qty">
+                        </div>
+                        <div>
+                            <label>Buy Price</label>
+                            <input type="number" id="price3" value="1600" placeholder="₹">
+                        </div>
+                    </div>
                 </div>
-                <div class="holding-input">
-                    <input type="text" placeholder="Ticker" id="ticker2" value="TCS">
-                    <input type="number" placeholder="Qty" id="qty2" value="30">
-                </div>
-                <div class="holding-input">
-                    <input type="text" placeholder="Ticker" id="ticker3" value="HDFCBANK">
-                    <input type="number" placeholder="Qty" id="qty3" value="40">
-                </div>
+                <button class="add-btn" onclick="addHolding()">+ Add Another Stock</button>
             </div>
-        </div>
 
-        <div class="agents-section">
-            <div class="section-header">
-                <span class="section-title">Pipeline Agents</span>
+            <button class="run-btn" id="runBtn" onclick="runPipeline()">
+                <span>▶</span> Analyze Portfolio
+            </button>
+
+            <div class="card">
+                <h3 class="card-title"><span>🔄</span> Pipeline Agents</h3>
+                <div style="font-size: 13px; color: rgba(255,255,255,0.6); line-height: 2;">
+                    1. <strong>Data Agent</strong> — Fetches NSE data<br>
+                    2. <strong>Signal Agent</strong> — Detects patterns<br>
+                    3. <strong>Context Agent</strong> — RAG enrichment<br>
+                    4. <strong>Reasoning Agent</strong> — LLM analysis<br>
+                    5. <strong>Portfolio Agent</strong> — Your impact<br>
+                    6. <strong>Action Agent</strong> — Recommendations
+                </div>
             </div>
-            <div class="agents-grid">
-                <div class="agent-card"><div class="agent-icon">📡</div><div class="agent-name">Data</div></div>
-                <div class="agent-card"><div class="agent-icon">📈</div><div class="agent-name">Signal</div></div>
-                <div class="agent-card"><div class="agent-icon">📚</div><div class="agent-name">Context</div></div>
-                <div class="agent-card"><div class="agent-icon">🧠</div><div class="agent-name">Reasoning</div></div>
-                <div class="agent-card"><div class="agent-icon">💼</div><div class="agent-name">Portfolio</div></div>
-                <div class="agent-card"><div class="agent-icon">🎯</div><div class="agent-name">Action</div></div>
+        </aside>
+
+        <main class="results-section">
+            <h2 class="section-title">Analysis Results</h2>
+
+            <div class="stats-bar" id="statsBar" style="display: none;">
+                <div class="stat-item">
+                    <span class="value" id="signalCount">0</span>
+                    <span class="label">Signals Found</span>
+                </div>
+                <div class="stat-item">
+                    <span class="value" id="alertCount">0</span>
+                    <span class="label">Alerts Generated</span>
+                </div>
+                <div class="stat-item">
+                    <span class="value" id="pipelineTime">0s</span>
+                    <span class="label">Processing Time</span>
+                </div>
             </div>
-        </div>
-    </section>
+
+            <div id="resultsContainer">
+                <div class="empty-state">
+                    <div class="empty-icon">📊</div>
+                    <h3 class="empty-title">Ready to Analyze</h3>
+                    <p class="empty-text">Enter your portfolio holdings and click "Analyze Portfolio" to get AI-powered insights on your stocks.</p>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <footer>
         <div class="disclaimer">
-            <strong>Disclaimer:</strong> SIGMA is an AI-powered research tool for informational purposes only.
-            It does not constitute licensed financial advice under SEBI regulations.
-            Consult a SEBI-registered investment advisor before acting on any recommendation.
+            <strong>Disclaimer:</strong> SIGMA is an AI-powered research tool for informational purposes only. It does not constitute licensed financial advice under SEBI/PMLA regulations. Past signal performance does not guarantee future results. All investment decisions are the sole responsibility of the investor. Consult a SEBI-registered investment advisor before acting on any recommendation.
         </div>
-        <p class="footer-text">ET AI Hackathon 2026 • Powered by Groq LLM & LangGraph</p>
     </footer>
 
     <script>
+        let holdingCount = 3;
+
+        function addHolding() {
+            holdingCount++;
+            const container = document.getElementById('holdingsContainer');
+            const div = document.createElement('div');
+            div.className = 'holding-row';
+            div.innerHTML = `
+                <div>
+                    <label>Stock Ticker</label>
+                    <input type="text" id="ticker${holdingCount}" placeholder="e.g. INFY">
+                </div>
+                <div>
+                    <label>Quantity</label>
+                    <input type="number" id="qty${holdingCount}" placeholder="Qty">
+                </div>
+                <div>
+                    <label>Buy Price</label>
+                    <input type="number" id="price${holdingCount}" placeholder="₹">
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
         async function runPipeline() {
             const btn = document.getElementById('runBtn');
-            const container = document.getElementById('alertsContainer');
+            const container = document.getElementById('resultsContainer');
+            const statsBar = document.getElementById('statsBar');
 
             btn.disabled = true;
             btn.innerHTML = '<div class="spinner"></div> Analyzing...';
+            statsBar.style.display = 'none';
 
             container.innerHTML = `
                 <div class="empty-state">
-                    <div class="spinner" style="margin: 0 auto 24px; width: 48px; height: 48px; border-width: 4px;"></div>
-                    <h3 class="empty-title">Running Pipeline...</h3>
-                    <p class="empty-text">Scanning NSE data, detecting signals, applying reasoning...</p>
+                    <div class="spinner" style="width: 48px; height: 48px; border-width: 4px; margin-bottom: 20px;"></div>
+                    <h3 class="empty-title">Running 6-Agent Pipeline...</h3>
+                    <p class="empty-text">Fetching NSE data → Detecting signals → Enriching context → Reasoning → Analyzing portfolio impact → Generating recommendations</p>
                 </div>
             `;
 
             try {
+                // Build portfolio from user inputs
                 const holdings = [];
-                for (let i = 1; i <= 3; i++) {
-                    const ticker = document.getElementById(`ticker${i}`)?.value;
+                for (let i = 1; i <= holdingCount; i++) {
+                    const ticker = document.getElementById(`ticker${i}`)?.value?.trim();
                     const qty = parseInt(document.getElementById(`qty${i}`)?.value) || 0;
+                    const price = parseFloat(document.getElementById(`price${i}`)?.value) || 0;
+
                     if (ticker && qty > 0) {
-                        holdings.push({ ticker: ticker.toUpperCase(), quantity: qty, avg_cost: 1000, current_price: 1000 });
+                        holdings.push({
+                            ticker: ticker.toUpperCase(),
+                            quantity: qty,
+                            avg_buy_price: price,
+                            current_price: price * 1.05, // Estimate current as 5% higher
+                            exchange: "NSE",
+                            sector: "Unknown"
+                        });
                     }
                 }
 
-                const payload = holdings.length > 0 ? {
-                    portfolio: { user_id: "dashboard_user", holdings, total_value: holdings.reduce((s, h) => s + h.quantity * 1000, 0), tax_regime: "new" }
-                } : {};
+                const totalValue = holdings.reduce((sum, h) => sum + (h.quantity * h.current_price), 0);
+
+                const payload = {
+                    portfolio: holdings.length > 0 ? {
+                        user_id: "dashboard_user",
+                        holdings: holdings,
+                        total_value: totalValue,
+                        risk_profile: "MODERATE",
+                        tax_regime: "new"
+                    } : null
+                };
 
                 const response = await fetch('/api/run-pipeline', {
                     method: 'POST',
@@ -636,36 +650,93 @@
                 });
 
                 const data = await response.json();
-                if (!response.ok) throw new Error(data.detail || 'Pipeline failed');
 
-                document.getElementById('signalCount').textContent = data.signal_count;
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Pipeline failed');
+                }
+
+                // Update stats
+                statsBar.style.display = 'flex';
+                document.getElementById('signalCount').textContent = data.signal_count || 0;
+                document.getElementById('alertCount').textContent = data.alerts?.length || 0;
                 document.getElementById('pipelineTime').textContent = (data.pipeline_duration_ms / 1000).toFixed(1) + 's';
 
-                if (data.alerts?.length > 0) {
-                    container.innerHTML = data.alerts.map(a => `
-                        <div class="alert-card">
-                            <div class="alert-top">
-                                <span class="alert-ticker">${a.ticker}</span>
-                                <span class="severity-badge severity-${a.severity}">${a.severity}</span>
-                            </div>
-                            <p class="alert-headline">${a.headline}</p>
-                            <div class="alert-meta">
-                                <div class="confidence-wrapper">
-                                    <span class="confidence-label">Confidence</span>
-                                    <div class="confidence-bar"><div class="confidence-fill" style="width:${a.confidence_score*100}%"></div></div>
-                                    <span class="confidence-value">${(a.confidence_score*100).toFixed(0)}%</span>
+                // Render alerts
+                if (data.alerts && data.alerts.length > 0) {
+                    container.innerHTML = data.alerts.map(alert => {
+                        const directionClass = alert.reasoning_trace?.find(r => r.step === 6)?.finding?.includes('BULLISH') ? 'bullish' :
+                                              alert.reasoning_trace?.find(r => r.step === 6)?.finding?.includes('BEARISH') ? 'bearish' : '';
+
+                        return `
+                            <div class="alert-card">
+                                <div class="alert-header">
+                                    <span class="alert-ticker">${alert.ticker}</span>
+                                    <span class="severity-badge severity-${alert.severity}">${alert.severity}</span>
+                                </div>
+
+                                <h4 class="alert-headline">${alert.headline}</h4>
+                                <p class="alert-summary">${alert.signal_summary || alert.context_summary || ''}</p>
+
+                                <div class="alert-metrics">
+                                    <div class="metric-box">
+                                        <div class="metric-value">${(alert.confidence_score * 100).toFixed(0)}%</div>
+                                        <div class="metric-label">Confidence</div>
+                                    </div>
+                                    <div class="metric-box">
+                                        <div class="metric-value ${directionClass}">${alert.reasoning_trace?.[0]?.finding?.includes('BULLISH') ? '↑' : alert.reasoning_trace?.[0]?.finding?.includes('BEARISH') ? '↓' : '→'}</div>
+                                        <div class="metric-label">Direction</div>
+                                    </div>
+                                    <div class="metric-box">
+                                        <div class="metric-value">${alert.sources?.length || 0}</div>
+                                        <div class="metric-label">Sources</div>
+                                    </div>
+                                </div>
+
+                                ${alert.reasoning_trace && alert.reasoning_trace.length > 0 ? `
+                                    <div class="reasoning-section">
+                                        <h5 class="reasoning-title">Chain of Thought Analysis</h5>
+                                        ${alert.reasoning_trace.slice(0, 6).map(step => `
+                                            <div class="reasoning-step">
+                                                <div class="step-number">${step.step}</div>
+                                                <div class="step-content">
+                                                    <div class="step-label">${step.label}</div>
+                                                    <div class="step-finding">${step.finding}</div>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+
+                                <div class="action-box">
+                                    <h5 class="action-title">Recommended Action</h5>
+                                    <p class="action-text">${alert.recommended_action || 'Monitor this stock and review the analysis.'}</p>
                                 </div>
                             </div>
-                        </div>
-                    `).join('');
+                        `;
+                    }).join('');
                 } else {
-                    container.innerHTML = `<div class="empty-state"><div class="empty-icon">✓</div><h3 class="empty-title">No significant signals</h3><p class="empty-text">Markets appear stable.</p></div>`;
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">✅</div>
+                            <h3 class="empty-title">No Significant Signals Detected</h3>
+                            <p class="empty-text">The analysis found no actionable signals for your portfolio stocks at this time. This could mean the market is stable or the stocks are trading within normal patterns. Check back later for updates.</p>
+                        </div>
+                    `;
                 }
+
             } catch (error) {
-                container.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠</div><h3 class="empty-title">Error</h3><p class="empty-text">${error.message}</p></div>`;
+                statsBar.style.display = 'none';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <h3 class="empty-title">Analysis Error</h3>
+                        <p class="empty-text">${error.message}</p>
+                        <p class="empty-text" style="margin-top: 12px; font-size: 12px;">Try again or check if your holdings are valid NSE tickers.</p>
+                    </div>
+                `;
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<span>▶</span> Run Analysis';
+                btn.innerHTML = '<span>▶</span> Analyze Portfolio';
             }
         }
     </script>
