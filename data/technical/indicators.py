@@ -1,18 +1,17 @@
 """
 SIGMA Technical Analysis Engine.
 Computes indicators, detects breakouts, and analyzes support/resistance levels.
+Serverless-optimized: No heavy dependencies (numpy/scipy/pandas-ta optional).
 """
 
 from typing import Any
 
-import numpy as np
 import pandas as pd
-from scipy.signal import argrelextrema
 
 
 def compute_all_indicators(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Append technical indicators to the DataFrame using pandas-ta.
+    Append technical indicators to the DataFrame.
 
     Args:
         df: DataFrame with columns [Date, Open, High, Low, Close, Volume]
@@ -20,51 +19,42 @@ def compute_all_indicators(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame with all indicator columns appended.
     """
-    # Ensure we have the required columns
     required_cols = ["Open", "High", "Low", "Close", "Volume"]
     for col in required_cols:
         if col not in df.columns:
             raise ValueError(f"Missing required column: {col}")
 
-    # Make a copy to avoid modifying original
     df = df.copy()
 
-    try:
-        import pandas_ta as ta
+    # RSI
+    df["RSI_14"] = _calculate_rsi(df["Close"], 14)
 
-        # RSI
-        df["RSI_14"] = ta.rsi(df["Close"], length=14)
+    # MACD
+    exp1 = df["Close"].ewm(span=12, adjust=False).mean()
+    exp2 = df["Close"].ewm(span=26, adjust=False).mean()
+    df["MACD_line"] = exp1 - exp2
+    df["MACD_signal"] = df["MACD_line"].ewm(span=9, adjust=False).mean()
+    df["MACD_hist"] = df["MACD_line"] - df["MACD_signal"]
 
-        # MACD
-        macd = ta.macd(df["Close"])
-        if macd is not None and not macd.empty:
-            df["MACD_line"] = macd.iloc[:, 0]
-            df["MACD_signal"] = macd.iloc[:, 1]
-            df["MACD_hist"] = macd.iloc[:, 2]
+    # Bollinger Bands
+    df["BB_mid"] = df["Close"].rolling(20).mean()
+    std = df["Close"].rolling(20).std()
+    df["BB_upper"] = df["BB_mid"] + (std * 2)
+    df["BB_lower"] = df["BB_mid"] - (std * 2)
 
-        # Bollinger Bands
-        bbands = ta.bbands(df["Close"])
-        if bbands is not None and not bbands.empty:
-            df["BB_lower"] = bbands.iloc[:, 0]
-            df["BB_mid"] = bbands.iloc[:, 1]
-            df["BB_upper"] = bbands.iloc[:, 2]
+    # SMAs
+    df["SMA_20"] = df["Close"].rolling(20).mean()
+    df["SMA_50"] = df["Close"].rolling(50).mean()
+    df["SMA_200"] = df["Close"].rolling(200).mean()
 
-        # SMAs
-        df["SMA_20"] = ta.sma(df["Close"], length=20)
-        df["SMA_50"] = ta.sma(df["Close"], length=50)
-        df["SMA_200"] = ta.sma(df["Close"], length=200)
+    # ATR
+    high_low = df["High"] - df["Low"]
+    high_close = (df["High"] - df["Close"].shift()).abs()
+    low_close = (df["Low"] - df["Close"].shift()).abs()
+    tr = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
+    df["ATR_14"] = tr.rolling(14).mean()
 
-        # ATR
-        df["ATR_14"] = ta.atr(df["High"], df["Low"], df["Close"], length=14)
-
-    except ImportError:
-        # Fallback to manual calculation if pandas-ta not available
-        df["RSI_14"] = _calculate_rsi(df["Close"], 14)
-        df["SMA_20"] = df["Close"].rolling(20).mean()
-        df["SMA_50"] = df["Close"].rolling(50).mean()
-        df["SMA_200"] = df["Close"].rolling(200).mean()
-
-    # Volume analysis (always use manual calc for consistency)
+    # Volume analysis
     df["Volume_SMA_20"] = df["Volume"].rolling(20).mean()
     df["Volume_Ratio"] = df["Volume"] / df["Volume_SMA_20"]
 
@@ -72,7 +62,7 @@ def compute_all_indicators(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _calculate_rsi(series: pd.Series, period: int = 14) -> pd.Series:
-    """Manual RSI calculation as fallback."""
+    """Manual RSI calculation."""
     delta = series.diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
@@ -90,10 +80,9 @@ def detect_52w_breakout(df: pd.DataFrame) -> dict[str, Any] | None:
     Returns:
         Dict with breakout details, or None if no breakout detected.
     """
-    if len(df) < 253:  # Need at least 252 + 1 days
+    if len(df) < 253:
         return None
 
-    # Compute 252-day rolling max (excluding current bar)
     rolling_max = df["Close"].iloc[:-1].rolling(252, min_periods=200).max()
 
     if rolling_max.empty or pd.isna(rolling_max.iloc[-1]):
@@ -102,22 +91,18 @@ def detect_52w_breakout(df: pd.DataFrame) -> dict[str, Any] | None:
     prev_high = rolling_max.iloc[-1]
     current_close = df["Close"].iloc[-1]
 
-    # Check if current close exceeds previous 252-day max
     if current_close <= prev_high:
         return None
 
     breakout_pct = ((current_close - prev_high) / prev_high) * 100
 
-    # Volume confirmation
     volume_ratio = df["Volume_Ratio"].iloc[-1] if "Volume_Ratio" in df.columns else 1.0
     if pd.isna(volume_ratio):
         volume_ratio = 1.0
 
-    # Only confirm breakout if volume is elevated
     if volume_ratio < 1.5:
         return None
 
-    # Calculate strength
     strength = min(1.0, (volume_ratio - 1.0) * 0.3 + breakout_pct * 2 / 100)
 
     return {
@@ -166,6 +151,7 @@ def detect_support_resistance(
 ) -> dict[str, list[dict]]:
     """
     Detect support and resistance levels using local extrema.
+    Pure pandas implementation without scipy.
 
     Args:
         df: DataFrame with OHLCV data.
@@ -177,19 +163,29 @@ def detect_support_resistance(
     if len(df) < 20:
         return {"support_levels": [], "resistance_levels": []}
 
-    closes = df["Close"].values
-
-    # Find local maxima (resistance) and minima (support)
+    closes = df["Close"].tolist()
     order = 5
-    local_max_idx = argrelextrema(closes, np.greater, order=order)[0]
-    local_min_idx = argrelextrema(closes, np.less, order=order)[0]
 
-    def cluster_levels(indices: np.ndarray, prices: np.ndarray) -> list[dict]:
+    # Find local maxima (resistance)
+    local_max_idx = []
+    for i in range(order, len(closes) - order):
+        if all(closes[i] > closes[i - j] for j in range(1, order + 1)) and \
+           all(closes[i] > closes[i + j] for j in range(1, order + 1)):
+            local_max_idx.append(i)
+
+    # Find local minima (support)
+    local_min_idx = []
+    for i in range(order, len(closes) - order):
+        if all(closes[i] < closes[i - j] for j in range(1, order + 1)) and \
+           all(closes[i] < closes[i + j] for j in range(1, order + 1)):
+            local_min_idx.append(i)
+
+    def cluster_levels(indices: list, prices: list) -> list[dict]:
         """Cluster price levels within tolerance band."""
         if len(indices) == 0:
             return []
 
-        levels = prices[indices]
+        levels = [prices[i] for i in indices]
         clusters = []
         used = set()
 
@@ -197,19 +193,16 @@ def detect_support_resistance(
             if i in used:
                 continue
 
-            # Find all levels within tolerance
             tolerance = level * (tolerance_pct / 100)
-            cluster_indices = []
             cluster_prices = []
 
             for j, other_level in enumerate(levels):
                 if j not in used and abs(other_level - level) <= tolerance:
-                    cluster_indices.append(j)
                     cluster_prices.append(other_level)
                     used.add(j)
 
             if cluster_prices:
-                avg_price = np.mean(cluster_prices)
+                avg_price = sum(cluster_prices) / len(cluster_prices)
                 touches = len(cluster_prices)
                 strength = "confirmed" if touches >= 3 else "weak"
 
@@ -243,18 +236,14 @@ def compute_historical_pattern_success_rate(
         return {"signal_type": signal_type, "occurrences": 0, "insufficient_data": True}
 
     if signal_type == "52W_BREAKOUT":
-        breakout_dates = []
         forward_returns = []
 
-        # Scan through history for breakouts
         for i in range(252, len(df) - 30):
             subset = df.iloc[: i + 1].copy()
             subset = compute_all_indicators(subset)
             breakout = detect_52w_breakout(subset)
 
             if breakout:
-                breakout_dates.append(i)
-                # Compute 30-day forward return
                 future_close = df["Close"].iloc[min(i + 30, len(df) - 1)]
                 current_close = df["Close"].iloc[i]
                 forward_return = ((future_close - current_close) / current_close) * 100
@@ -263,17 +252,19 @@ def compute_historical_pattern_success_rate(
         if len(forward_returns) < 5:
             return {"signal_type": signal_type, "occurrences": 0, "insufficient_data": True}
 
-        returns_arr = np.array(forward_returns)
-        positive_rate = np.mean(returns_arr > 0)
-        median_return = float(np.median(returns_arr))
-        worst_quartile = float(np.percentile(returns_arr, 25))
+        sorted_returns = sorted(forward_returns)
+        positive_rate = sum(1 for r in forward_returns if r > 0) / len(forward_returns)
+        median_idx = len(sorted_returns) // 2
+        median_return = sorted_returns[median_idx]
+        worst_quartile_idx = len(sorted_returns) // 4
+        worst_quartile = sorted_returns[worst_quartile_idx]
 
         return {
             "signal_type": signal_type,
             "occurrences": len(forward_returns),
             "positive_rate": float(positive_rate),
-            "median_return": median_return,
-            "worst_quartile": worst_quartile,
+            "median_return": float(median_return),
+            "worst_quartile": float(worst_quartile),
         }
 
     return {"signal_type": signal_type, "occurrences": 0, "insufficient_data": True}

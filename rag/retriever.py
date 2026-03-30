@@ -1,14 +1,36 @@
 """
 SIGMA Retriever.
 Composite retriever logic for RAG enrichment.
+Serverless-optimized: No numpy dependency.
 """
 
 from typing import TYPE_CHECKING, Any
 
-import numpy as np
-
 from config import settings
 from rag.vector_store import SigmaVectorStore
+
+
+def _median(values: list[float]) -> float:
+    """Calculate median without numpy."""
+    sorted_vals = sorted(values)
+    n = len(sorted_vals)
+    if n == 0:
+        return 0.0
+    mid = n // 2
+    if n % 2 == 0:
+        return (sorted_vals[mid - 1] + sorted_vals[mid]) / 2
+    return sorted_vals[mid]
+
+
+def _percentile(values: list[float], pct: float) -> float:
+    """Calculate percentile without numpy."""
+    if not values:
+        return 0.0
+    sorted_vals = sorted(values)
+    idx = int(len(sorted_vals) * pct / 100)
+    idx = min(idx, len(sorted_vals) - 1)
+    return sorted_vals[idx]
+
 
 if TYPE_CHECKING:
     from models.events import DetectedSignal
@@ -133,8 +155,8 @@ class SigmaRetriever:
 
         # Compute statistics
         if outcomes:
-            median_return = float(np.median(outcomes))
-            worst_quartile = float(np.percentile(outcomes, 25))
+            median_return = _median(outcomes)
+            worst_quartile = _percentile(outcomes, 25)
         else:
             median_return = None
             worst_quartile = None
