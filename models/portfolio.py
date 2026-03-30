@@ -4,8 +4,9 @@ SIGMA Portfolio Pydantic schemas.
 
 from datetime import date, datetime
 from enum import StrEnum
+from typing import Optional
 
-from pydantic import BaseModel, computed_field
+from pydantic import BaseModel, Field, computed_field
 
 
 class RiskProfile(StrEnum):
@@ -18,23 +19,32 @@ class RiskProfile(StrEnum):
 class Holding(BaseModel):
     """A single stock holding in a portfolio."""
     ticker: str
-    exchange: str
     quantity: int
-    avg_buy_price: float
-    current_price: float
-    purchase_date: date
-    sector: str
+    exchange: str = "NSE"
+    avg_buy_price: float = 0.0
+    avg_cost: float = 0.0  # Alias for avg_buy_price
+    current_price: float = 0.0
+    purchase_date: date = Field(default_factory=date.today)
+    sector: str = "Unknown"
+
+    def model_post_init(self, __context):
+        # Use avg_cost as fallback for avg_buy_price
+        if self.avg_buy_price == 0.0 and self.avg_cost > 0:
+            object.__setattr__(self, 'avg_buy_price', self.avg_cost)
 
     @computed_field
     @property
     def current_value(self) -> float:
         """Current market value of the holding."""
-        return self.quantity * self.current_price
+        price = self.current_price if self.current_price > 0 else self.avg_buy_price
+        return self.quantity * price
 
     @computed_field
     @property
     def unrealised_pnl(self) -> float:
         """Unrealised profit/loss on the holding."""
+        if self.avg_buy_price == 0:
+            return 0.0
         return self.quantity * (self.current_price - self.avg_buy_price)
 
     @computed_field
@@ -54,12 +64,14 @@ class UserPortfolio(BaseModel):
     """A user's complete portfolio."""
     user_id: str
     holdings: list[Holding]
-    risk_profile: RiskProfile
-    last_updated: datetime
+    risk_profile: RiskProfile = RiskProfile.MODERATE
+    last_updated: datetime = Field(default_factory=datetime.now)
+    total_value: float = 0.0  # Can be provided or computed
+    tax_regime: str = "new"
 
     @computed_field
     @property
-    def total_value(self) -> float:
+    def computed_total_value(self) -> float:
         """Total market value of all holdings."""
         return sum(h.current_value for h in self.holdings)
 
@@ -70,11 +82,12 @@ class UserPortfolio(BaseModel):
         Returns:
             Weight as a percentage (0-100), or 0.0 if not held.
         """
-        if self.total_value == 0:
+        total = self.computed_total_value or self.total_value
+        if total == 0:
             return 0.0
         for holding in self.holdings:
             if holding.ticker == ticker:
-                return (holding.current_value / self.total_value) * 100
+                return (holding.current_value / total) * 100
         return 0.0
 
     def get_holding(self, ticker: str) -> Holding | None:
@@ -86,7 +99,8 @@ class UserPortfolio(BaseModel):
 
     def get_sector_weight(self, sector: str) -> float:
         """Get the total weight of a sector in the portfolio."""
-        if self.total_value == 0:
+        total = self.computed_total_value or self.total_value
+        if total == 0:
             return 0.0
         sector_value = sum(h.current_value for h in self.holdings if h.sector == sector)
-        return (sector_value / self.total_value) * 100
+        return (sector_value / total) * 100
