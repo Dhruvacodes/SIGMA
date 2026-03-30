@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGMA - Signal Intelligence & Guided Market Advisor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0d1b2a 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo span {
+            font-size: 12px;
+            color: #888;
+            display: block;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 212, 100, 0.1);
+            border: 1px solid rgba(0, 212, 100, 0.3);
+            border-radius: 20px;
+            font-size: 14px;
+            color: #00d464;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #00d464;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        /* Run Button */
+        .run-btn {
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .run-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .run-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .run-btn.loading {
+            background: linear-gradient(135deg, #555, #333);
+        }
+
+        /* Alerts Section */
+        .alerts-container {
+            min-height: 400px;
+        }
+
+        .alert-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .alert-item:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .alert-ticker {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .alert-severity {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .severity-URGENT {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+            border: 1px solid rgba(255, 59, 48, 0.3);
+        }
+
+        .severity-OPPORTUNITY {
+            background: rgba(52, 199, 89, 0.2);
+            color: #34c759;
+            border: 1px solid rgba(52, 199, 89, 0.3);
+        }
+
+        .severity-WATCH {
+            background: rgba(255, 204, 0, 0.2);
+            color: #ffcc00;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+        }
+
+        .severity-INFORMATIONAL {
+            background: rgba(0, 122, 255, 0.2);
+            color: #007aff;
+            border: 1px solid rgba(0, 122, 255, 0.3);
+        }
+
+        .alert-headline {
+            font-size: 15px;
+            color: #ccc;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .alert-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        .alert-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .confidence-bar {
+            width: 60px;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+            border-radius: 3px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Portfolio Form */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 6px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+
+        .holding-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .holding-item input {
+            flex: 1;
+        }
+
+        .add-holding-btn {
+            background: transparent;
+            border: 1px dashed rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 8px;
+            color: #888;
+            cursor: pointer;
+            width: 100%;
+            font-size: 13px;
+        }
+
+        .add-holding-btn:hover {
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* Agent Pipeline */
+        .pipeline {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .pipeline-agent {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .pipeline-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .pipeline-agent:nth-child(1) .pipeline-icon { background: rgba(0, 212, 255, 0.2); }
+        .pipeline-agent:nth-child(2) .pipeline-icon { background: rgba(123, 47, 247, 0.2); }
+        .pipeline-agent:nth-child(3) .pipeline-icon { background: rgba(255, 149, 0, 0.2); }
+        .pipeline-agent:nth-child(4) .pipeline-icon { background: rgba(52, 199, 89, 0.2); }
+        .pipeline-agent:nth-child(5) .pipeline-icon { background: rgba(255, 59, 48, 0.2); }
+        .pipeline-agent:nth-child(6) .pipeline-icon { background: rgba(175, 82, 222, 0.2); }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #888;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+            font-size: 13px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 40px;
+        }
+
+        .disclaimer {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            padding: 16px;
+            background: rgba(255, 204, 0, 0.05);
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            border-radius: 8px;
+            font-size: 11px;
+            color: #999;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">&#x03A3;</div>
+                <div>
+                    <h1>SIGMA</h1>
+                    <span>Signal Intelligence & Guided Market Advisor</span>
+                </div>
+            </div>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                <span>System Online</span>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <main>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Market Signals & Alerts</h2>
+                        <button class="run-btn" id="runPipeline" onclick="runPipeline()">
+                            <span>&#9654;</span> Run Analysis
+                        </button>
+                    </div>
+                    <div class="alerts-container" id="alertsContainer">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">&#128202;</div>
+                            <h3>No alerts yet</h3>
+                            <p>Click "Run Analysis" to scan for market signals</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="sidebar">
+                <div class="card">
+                    <h2 class="card-title" style="margin-bottom: 16px;">Pipeline Stats</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="signalCount">-</div>
+                            <div class="stat-label">Signals</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="pipelineTime">-</div>
+                            <div class="stat-label">Duration</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title" style="margin-bottom: 16px;">Your Portfolio</h2>
+                    <div id="holdingsContainer">
+                        <div class="holding-item">
+                            <input type="text" placeholder="Ticker" id="ticker1" value="RELIANCE">
+                            <input type="number" placeholder="Qty" id="qty1" value="50" style="width: 70px;">
+                        </div>
+                        <div class="holding-item">
+                            <input type="text" placeholder="Ticker" id="ticker2" value="TCS">
+                            <input type="number" placeholder="Qty" id="qty2" value="30" style="width: 70px;">
+                        </div>
+                        <div class="holding-item">
+                            <input type="text" placeholder="Ticker" id="ticker3" value="HDFCBANK">
+                            <input type="number" placeholder="Qty" id="qty3" value="40" style="width: 70px;">
+                        </div>
+                    </div>
+                    <button class="add-holding-btn" onclick="addHolding()">+ Add Holding</button>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title" style="margin-bottom: 16px;">Agent Pipeline</h2>
+                    <div class="pipeline">
+                        <div class="pipeline-agent">
+                            <div class="pipeline-icon">&#128225;</div>
+                            <span>Data Agent</span>
+                        </div>
+                        <div class="pipeline-agent">
+                            <div class="pipeline-icon">&#128200;</div>
+                            <span>Signal Agent</span>
+                        </div>
+                        <div class="pipeline-agent">
+                            <div class="pipeline-icon">&#128218;</div>
+                            <span>Context Agent</span>
+                        </div>
+                        <div class="pipeline-agent">
+                            <div class="pipeline-icon">&#129504;</div>
+                            <span>Reasoning Agent</span>
+                        </div>
+                        <div class="pipeline-agent">
+                            <div class="pipeline-icon">&#128188;</div>
+                            <span>Portfolio Agent</span>
+                        </div>
+                        <div class="pipeline-agent">
+                            <div class="pipeline-icon">&#127919;</div>
+                            <span>Action Agent</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <footer>
+            <div class="disclaimer">
+                <strong>Disclaimer:</strong> SIGMA is for informational purposes only and does not constitute investment advice.
+                Past performance is not indicative of future results. Always consult a SEBI-registered investment advisor
+                before making investment decisions. The signals and recommendations provided are AI-generated and should be
+                independently verified.
+            </div>
+            <p>Built for ET AI Hackathon 2026 | Powered by Groq LLM & LangGraph</p>
+        </footer>
+    </div>
+
+    <script>
+        let holdingCount = 3;
+
+        async function runPipeline() {
+            const btn = document.getElementById('runPipeline');
+            const container = document.getElementById('alertsContainer');
+
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.innerHTML = '<div class="spinner"></div> Analyzing...';
+
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="spinner" style="margin: 0 auto 16px; width: 40px; height: 40px; border-width: 3px;"></div>
+                    <h3>Running Analysis Pipeline...</h3>
+                    <p>Scanning NSE data, detecting signals, applying reasoning...</p>
+                </div>
+            `;
+
+            try {
+                // Build portfolio from inputs
+                const holdings = [];
+                for (let i = 1; i <= holdingCount; i++) {
+                    const ticker = document.getElementById(`ticker${i}`)?.value;
+                    const qty = parseInt(document.getElementById(`qty${i}`)?.value) || 0;
+                    if (ticker && qty > 0) {
+                        holdings.push({
+                            ticker: ticker.toUpperCase(),
+                            quantity: qty,
+                            avg_cost: 1000,
+                            current_price: 1000
+                        });
+                    }
+                }
+
+                const payload = holdings.length > 0 ? {
+                    portfolio: {
+                        user_id: "dashboard_user",
+                        holdings: holdings,
+                        total_value: holdings.reduce((sum, h) => sum + h.quantity * h.current_price, 0),
+                        tax_regime: "new"
+                    }
+                } : {};
+
+                const response = await fetch('/api/run-pipeline', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Pipeline failed');
+                }
+
+                // Update stats
+                document.getElementById('signalCount').textContent = data.signal_count;
+                document.getElementById('pipelineTime').textContent =
+                    (data.pipeline_duration_ms / 1000).toFixed(1) + 's';
+
+                // Render alerts
+                if (data.alerts && data.alerts.length > 0) {
+                    container.innerHTML = data.alerts.map(alert => `
+                        <div class="alert-item">
+                            <div class="alert-header">
+                                <span class="alert-ticker">${alert.ticker}</span>
+                                <span class="alert-severity severity-${alert.severity}">${alert.severity}</span>
+                            </div>
+                            <div class="alert-headline">${alert.headline}</div>
+                            <div class="alert-meta">
+                                <span>
+                                    Confidence:
+                                    <div class="confidence-bar">
+                                        <div class="confidence-fill" style="width: ${(alert.confidence_score * 100)}%"></div>
+                                    </div>
+                                    ${(alert.confidence_score * 100).toFixed(0)}%
+                                </span>
+                                <span>Action: ${alert.recommended_action?.substring(0, 50) || 'Monitor'}...</span>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">&#9989;</div>
+                            <h3>No significant signals detected</h3>
+                            <p>Markets appear stable. Check back later for updates.</p>
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">&#9888;</div>
+                        <h3>Analysis Error</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.innerHTML = '<span>&#9654;</span> Run Analysis';
+            }
+        }
+
+        function addHolding() {
+            holdingCount++;
+            const container = document.getElementById('holdingsContainer');
+            const div = document.createElement('div');
+            div.className = 'holding-item';
+            div.innerHTML = `
+                <input type="text" placeholder="Ticker" id="ticker${holdingCount}">
+                <input type="number" placeholder="Qty" id="qty${holdingCount}" style="width: 70px;">
+            `;
+            container.appendChild(div);
+        }
+    </script>
+</body>
+</html>
