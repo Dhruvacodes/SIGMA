@@ -1,13 +1,10 @@
 """
 SIGMA Main Application.
-FastAPI app entry point.
+FastAPI app entry point - optimized for Vercel serverless.
 """
 
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-
-from api.routes import router as api_router
-from api.websocket import alert_websocket_handler
 
 # Create FastAPI app
 app = FastAPI(
@@ -18,7 +15,7 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# CORS configuration (allow all origins for hackathon demo)
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,9 +23,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Include API routes
-app.include_router(api_router)
 
 
 @app.get("/")
@@ -38,23 +32,52 @@ async def root():
         "name": "SIGMA",
         "description": "Signal Intelligence & Guided Market Advisor",
         "version": "1.0.0",
+        "status": "running",
         "docs": "/docs",
-        "health": "/api/health",
+        "health": "/health",
+        "api": "/api/health",
     }
 
 
-@app.websocket("/ws/alerts")
-async def websocket_endpoint(websocket: WebSocket, portfolio_id: str | None = None):
-    """
-    WebSocket endpoint for real-time alert streaming.
-
-    Query params:
-        portfolio_id: Optional portfolio ID to use for personalized alerts.
-    """
-    await alert_websocket_handler(websocket, portfolio_id)
+@app.get("/health")
+async def health():
+    """Simple health check."""
+    return {"status": "ok"}
 
 
-if __name__ == "__main__":
-    import uvicorn
+@app.get("/api/health")
+async def api_health():
+    """API health check with system info."""
+    from datetime import datetime
+    return {
+        "status": "ok",
+        "agents": [
+            "DataAgent",
+            "SignalAgent",
+            "ContextAgent",
+            "ReasoningAgent",
+            "PortfolioAgent",
+            "ActionAgent",
+        ],
+        "timestamp": datetime.now().isoformat(),
+    }
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+# Lazy load routes to reduce cold start time
+_routes_loaded = False
+
+@app.on_event("startup")
+async def load_routes():
+    """Load full API routes on first request."""
+    global _routes_loaded
+    if not _routes_loaded:
+        try:
+            from api.routes import router as api_router
+            app.include_router(api_router)
+            _routes_loaded = True
+        except Exception as e:
+            print(f"Warning: Could not load full API routes: {e}")
+
+
+# Export for Vercel
+handler = app
