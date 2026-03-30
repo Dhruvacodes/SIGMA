@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIGMA - Signal Intelligence & Guided Market Advisor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,27 +12,48 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --cyber-yellow: #FDE047;
+            --deep-onyx: #0A0A0A;
+            --charcoal: #171717;
+            --deep-gray: #262626;
+            --white: #FFFFFF;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0d1b2a 100%);
+            background: var(--deep-onyx);
             min-height: 100vh;
-            color: #e0e0e0;
+            color: var(--white);
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
+        /* Liquid Hero Section */
+        .hero {
+            background: var(--cyber-yellow);
+            min-height: 70vh;
+            position: relative;
+            padding: 40px 60px 120px;
+            border-radius: 0 0 120px 40px;
         }
 
-        /* Header */
-        header {
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            right: 10%;
+            width: 200px;
+            height: 200px;
+            background: var(--cyber-yellow);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 30px;
+            margin-bottom: 80px;
         }
 
         .logo {
@@ -44,546 +65,568 @@
         .logo-icon {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            background: var(--deep-onyx);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
+            font-weight: 800;
+            color: var(--cyber-yellow);
         }
 
         .logo h1 {
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--deep-onyx);
+            letter-spacing: -0.5px;
         }
 
-        .logo span {
-            font-size: 12px;
-            color: #888;
-            display: block;
-        }
-
-        .status-badge {
+        .status-pill {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
-            background: rgba(0, 212, 100, 0.1);
-            border: 1px solid rgba(0, 212, 100, 0.3);
-            border-radius: 20px;
-            font-size: 14px;
-            color: #00d464;
+            padding: 10px 20px;
+            background: var(--deep-onyx);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--cyber-yellow);
         }
 
         .status-dot {
             width: 8px;
             height: 8px;
-            background: #00d464;
+            background: var(--cyber-yellow);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
         }
 
-        /* Main Grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 24px;
+        .hero-content {
+            max-width: 700px;
         }
 
-        @media (max-width: 1024px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
+        .hero-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--deep-onyx);
+            opacity: 0.6;
+            margin-bottom: 16px;
         }
 
-        /* Cards */
-        .card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 24px;
-            backdrop-filter: blur(10px);
+        .hero-title {
+            font-size: clamp(48px, 8vw, 80px);
+            font-weight: 800;
+            color: var(--deep-onyx);
+            line-height: 0.95;
+            letter-spacing: -3px;
+            margin-bottom: 24px;
         }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .card-title {
+        .hero-subtitle {
             font-size: 18px;
-            font-weight: 600;
-            color: #fff;
+            color: var(--deep-onyx);
+            opacity: 0.7;
+            max-width: 500px;
+            line-height: 1.6;
+            margin-bottom: 40px;
         }
 
-        /* Run Button */
-        .run-btn {
-            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
-            border: none;
-            padding: 14px 32px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 16px;
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--deep-onyx);
+            color: var(--white);
+            padding: 18px 36px;
+            border-radius: 100px;
+            font-size: 15px;
             font-weight: 600;
+            border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .run-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
-        .run-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn-primary:active { transform: scale(0.95); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-        .run-btn.loading {
-            background: linear-gradient(135deg, #555, #333);
-        }
-
-        /* Alerts Section */
-        .alerts-container {
-            min-height: 400px;
-        }
-
-        .alert-item {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 16px;
+        .btn-outline {
+            background: transparent;
+            color: var(--deep-onyx);
+            padding: 18px 36px;
+            border-radius: 100px;
+            font-size: 15px;
+            font-weight: 600;
+            border: 2px solid rgba(0,0,0,0.2);
+            cursor: pointer;
+            text-decoration: none;
             transition: all 0.3s ease;
         }
 
-        .alert-item:hover {
-            border-color: rgba(0, 212, 255, 0.3);
-            background: rgba(255, 255, 255, 0.04);
+        .btn-outline:hover {
+            border-color: var(--deep-onyx);
+            background: rgba(0,0,0,0.05);
         }
 
-        .alert-header {
+        .glass-card {
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-30%);
+            width: 380px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 32px;
+            padding: 32px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.3);
+            z-index: 10;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(-30%); }
+            50% { transform: translateY(-35%); }
+        }
+
+        .glass-card-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
+            align-items: center;
+            margin-bottom: 24px;
         }
 
-        .alert-ticker {
-            font-size: 20px;
-            font-weight: 700;
-            color: #fff;
-        }
-
-        .alert-severity {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+        .glass-card-title {
+            font-size: 14px;
             font-weight: 600;
+            color: var(--deep-onyx);
+        }
+
+        .glass-pill {
+            background: var(--cyber-yellow);
+            color: var(--deep-onyx);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
         }
 
-        .severity-URGENT {
-            background: rgba(255, 59, 48, 0.2);
-            color: #ff3b30;
-            border: 1px solid rgba(255, 59, 48, 0.3);
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
-        .severity-OPPORTUNITY {
-            background: rgba(52, 199, 89, 0.2);
-            color: #34c759;
-            border: 1px solid rgba(52, 199, 89, 0.3);
+        .stat-box {
+            background: rgba(0,0,0,0.1);
+            padding: 20px;
+            border-radius: 16px;
         }
 
-        .severity-WATCH {
-            background: rgba(255, 204, 0, 0.2);
-            color: #ffcc00;
-            border: 1px solid rgba(255, 204, 0, 0.3);
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--deep-onyx);
+            letter-spacing: -1px;
         }
 
-        .severity-INFORMATIONAL {
-            background: rgba(0, 122, 255, 0.2);
-            color: #007aff;
-            border: 1px solid rgba(0, 122, 255, 0.3);
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--deep-onyx);
+            opacity: 0.6;
+            margin-top: 4px;
         }
+
+        .void-section {
+            background: var(--deep-onyx);
+            padding: 100px 60px 60px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--white);
+            opacity: 0.5;
+        }
+
+        .alerts-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-height: 300px;
+        }
+
+        .alert-card {
+            background: var(--charcoal);
+            border: 1px solid var(--deep-gray);
+            border-radius: 24px;
+            padding: 28px;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .alert-card:hover {
+            border-color: var(--cyber-yellow);
+            transform: translateX(8px);
+        }
+
+        .alert-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .alert-ticker {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -1px;
+        }
+
+        .severity-badge {
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .severity-URGENT { background: #FF3B30; color: white; }
+        .severity-OPPORTUNITY { background: var(--cyber-yellow); color: var(--deep-onyx); }
+        .severity-WATCH { background: #FF9500; color: var(--deep-onyx); }
+        .severity-INFORMATIONAL { background: var(--deep-gray); color: var(--white); }
 
         .alert-headline {
             font-size: 15px;
-            color: #ccc;
-            margin-bottom: 12px;
-            line-height: 1.5;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+            margin-bottom: 20px;
         }
 
         .alert-meta {
             display: flex;
-            gap: 20px;
-            font-size: 13px;
-            color: #888;
+            align-items: center;
+            gap: 24px;
         }
 
-        .alert-meta span {
+        .confidence-wrapper {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 12px;
+        }
+
+        .confidence-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.4);
         }
 
         .confidence-bar {
-            width: 60px;
+            width: 100px;
             height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
+            background: var(--deep-gray);
+            border-radius: 100px;
             overflow: hidden;
         }
 
         .confidence-fill {
             height: 100%;
-            background: linear-gradient(90deg, #00d4ff, #7b2ff7);
-            border-radius: 3px;
+            background: var(--cyber-yellow);
+            border-radius: 100px;
         }
 
-        /* Sidebar */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        /* Portfolio Form */
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            color: #888;
-            margin-bottom: 6px;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: #fff;
+        .confidence-value {
             font-size: 14px;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #00d4ff;
-        }
-
-        .holding-item {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .holding-item input {
-            flex: 1;
-        }
-
-        .add-holding-btn {
-            background: transparent;
-            border: 1px dashed rgba(255,255,255,0.2);
-            padding: 10px;
-            border-radius: 8px;
-            color: #888;
-            cursor: pointer;
-            width: 100%;
-            font-size: 13px;
-        }
-
-        .add-holding-btn:hover {
-            border-color: #00d4ff;
-            color: #00d4ff;
-        }
-
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .stat-item {
-            background: rgba(255, 255, 255, 0.02);
-            padding: 16px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 24px;
             font-weight: 700;
-            color: #fff;
-            margin-bottom: 4px;
+            color: var(--cyber-yellow);
         }
 
-        .stat-label {
-            font-size: 12px;
-            color: #888;
-        }
-
-        /* Agent Pipeline */
-        .pipeline {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .pipeline-agent {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 8px;
-            font-size: 13px;
-        }
-
-        .pipeline-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-
-        .pipeline-agent:nth-child(1) .pipeline-icon { background: rgba(0, 212, 255, 0.2); }
-        .pipeline-agent:nth-child(2) .pipeline-icon { background: rgba(123, 47, 247, 0.2); }
-        .pipeline-agent:nth-child(3) .pipeline-icon { background: rgba(255, 149, 0, 0.2); }
-        .pipeline-agent:nth-child(4) .pipeline-icon { background: rgba(52, 199, 89, 0.2); }
-        .pipeline-agent:nth-child(5) .pipeline-icon { background: rgba(255, 59, 48, 0.2); }
-        .pipeline-agent:nth-child(6) .pipeline-icon { background: rgba(175, 82, 222, 0.2); }
-
-        /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: #666;
+            padding: 80px 40px;
         }
 
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
+        .empty-icon { font-size: 64px; margin-bottom: 24px; opacity: 0.3; }
+        .empty-title { font-size: 24px; font-weight: 700; color: var(--white); margin-bottom: 12px; }
+        .empty-text { font-size: 15px; color: rgba(255,255,255,0.5); }
 
-        .empty-state h3 {
-            font-size: 18px;
-            margin-bottom: 8px;
-            color: #888;
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px 0;
-            color: #666;
-            font-size: 13px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+        .portfolio-section {
+            background: var(--charcoal);
+            border-radius: 32px;
+            padding: 32px;
             margin-top: 40px;
         }
 
+        .portfolio-title { font-size: 18px; font-weight: 700; margin-bottom: 24px; }
+
+        .holdings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .holding-input { display: flex; gap: 8px; }
+
+        .holding-input input {
+            flex: 1;
+            background: var(--deep-gray);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--white);
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .holding-input input:focus { outline: none; border-color: var(--cyber-yellow); }
+        .holding-input input::placeholder { color: rgba(255,255,255,0.3); }
+        .holding-input input[type="number"] { width: 80px; flex: none; }
+
+        .agents-section { margin-top: 60px; }
+
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+        }
+
+        .agent-card {
+            background: var(--charcoal);
+            border: 1px solid var(--deep-gray);
+            border-radius: 20px;
+            padding: 24px 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover { border-color: var(--cyber-yellow); transform: translateY(-4px); }
+        .agent-icon { font-size: 28px; margin-bottom: 12px; }
+        .agent-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7); }
+
+        footer { padding: 60px; text-align: center; }
+
         .disclaimer {
             max-width: 800px;
-            margin: 0 auto 20px;
-            padding: 16px;
-            background: rgba(255, 204, 0, 0.05);
-            border: 1px solid rgba(255, 204, 0, 0.2);
-            border-radius: 8px;
+            margin: 0 auto 32px;
+            padding: 24px;
+            background: rgba(253, 224, 71, 0.05);
+            border: 1px solid rgba(253, 224, 71, 0.2);
+            border-radius: 16px;
             font-size: 11px;
-            color: #999;
-            line-height: 1.6;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.8;
+        }
+
+        .footer-text { font-size: 13px; color: rgba(255,255,255,0.3); }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-top-color: var(--white);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 1100px) {
+            .glass-card {
+                position: relative;
+                right: auto;
+                top: auto;
+                transform: none;
+                margin-top: 40px;
+                width: 100%;
+                max-width: 400px;
+                animation: none;
+            }
+            .hero { padding: 30px 30px 80px; }
+            .void-section { padding: 60px 30px; }
+        }
+
+        @media (max-width: 900px) {
+            .agents-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .hero-title { font-size: 40px; letter-spacing: -2px; }
+            .cta-group { flex-direction: column; }
+            .btn-primary, .btn-outline { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
+    <section class="hero">
+        <header class="header">
             <div class="logo">
-                <div class="logo-icon">&#x03A3;</div>
-                <div>
-                    <h1>SIGMA</h1>
-                    <span>Signal Intelligence & Guided Market Advisor</span>
-                </div>
+                <div class="logo-icon">Σ</div>
+                <h1>SIGMA</h1>
             </div>
-            <div class="status-badge">
+            <div class="status-pill">
                 <div class="status-dot"></div>
-                <span>System Online</span>
+                System Online
             </div>
         </header>
 
-        <div class="dashboard-grid">
-            <main>
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Market Signals & Alerts</h2>
-                        <button class="run-btn" id="runPipeline" onclick="runPipeline()">
-                            <span>&#9654;</span> Run Analysis
-                        </button>
-                    </div>
-                    <div class="alerts-container" id="alertsContainer">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">&#128202;</div>
-                            <h3>No alerts yet</h3>
-                            <p>Click "Run Analysis" to scan for market signals</p>
-                        </div>
-                    </div>
-                </div>
-            </main>
-
-            <aside class="sidebar">
-                <div class="card">
-                    <h2 class="card-title" style="margin-bottom: 16px;">Pipeline Stats</h2>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-value" id="signalCount">-</div>
-                            <div class="stat-label">Signals</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="pipelineTime">-</div>
-                            <div class="stat-label">Duration</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title" style="margin-bottom: 16px;">Your Portfolio</h2>
-                    <div id="holdingsContainer">
-                        <div class="holding-item">
-                            <input type="text" placeholder="Ticker" id="ticker1" value="RELIANCE">
-                            <input type="number" placeholder="Qty" id="qty1" value="50" style="width: 70px;">
-                        </div>
-                        <div class="holding-item">
-                            <input type="text" placeholder="Ticker" id="ticker2" value="TCS">
-                            <input type="number" placeholder="Qty" id="qty2" value="30" style="width: 70px;">
-                        </div>
-                        <div class="holding-item">
-                            <input type="text" placeholder="Ticker" id="ticker3" value="HDFCBANK">
-                            <input type="number" placeholder="Qty" id="qty3" value="40" style="width: 70px;">
-                        </div>
-                    </div>
-                    <button class="add-holding-btn" onclick="addHolding()">+ Add Holding</button>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title" style="margin-bottom: 16px;">Agent Pipeline</h2>
-                    <div class="pipeline">
-                        <div class="pipeline-agent">
-                            <div class="pipeline-icon">&#128225;</div>
-                            <span>Data Agent</span>
-                        </div>
-                        <div class="pipeline-agent">
-                            <div class="pipeline-icon">&#128200;</div>
-                            <span>Signal Agent</span>
-                        </div>
-                        <div class="pipeline-agent">
-                            <div class="pipeline-icon">&#128218;</div>
-                            <span>Context Agent</span>
-                        </div>
-                        <div class="pipeline-agent">
-                            <div class="pipeline-icon">&#129504;</div>
-                            <span>Reasoning Agent</span>
-                        </div>
-                        <div class="pipeline-agent">
-                            <div class="pipeline-icon">&#128188;</div>
-                            <span>Portfolio Agent</span>
-                        </div>
-                        <div class="pipeline-agent">
-                            <div class="pipeline-icon">&#127919;</div>
-                            <span>Action Agent</span>
-                        </div>
-                    </div>
-                </div>
-            </aside>
+        <div class="hero-content">
+            <p class="hero-label">AI for Indian Investors</p>
+            <h2 class="hero-title">Market signals,<br>decoded.</h2>
+            <p class="hero-subtitle">6-agent AI system detecting breakouts, analyzing sentiment, and delivering actionable alerts with chain-of-thought reasoning.</p>
+            <div class="cta-group">
+                <button class="btn-primary" id="runBtn" onclick="runPipeline()">
+                    <span>▶</span> Run Analysis
+                </button>
+                <a href="/docs" class="btn-outline">API Docs</a>
+            </div>
         </div>
 
-        <footer>
-            <div class="disclaimer">
-                <strong>Disclaimer:</strong> SIGMA is for informational purposes only and does not constitute investment advice.
-                Past performance is not indicative of future results. Always consult a SEBI-registered investment advisor
-                before making investment decisions. The signals and recommendations provided are AI-generated and should be
-                independently verified.
+        <div class="glass-card">
+            <div class="glass-card-header">
+                <span class="glass-card-title">Pipeline Stats</span>
+                <span class="glass-pill">Live</span>
             </div>
-            <p>Built for ET AI Hackathon 2026 | Powered by Groq LLM & LangGraph</p>
-        </footer>
-    </div>
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-value" id="signalCount">—</div>
+                    <div class="stat-label">Signals</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="pipelineTime">—</div>
+                    <div class="stat-label">Duration</div>
+                </div>
+            </div>
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">Agents</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">70B</div>
+                    <div class="stat-label">LLM Params</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="void-section">
+        <div class="section-header">
+            <span class="section-title">Market Alerts</span>
+        </div>
+
+        <div class="alerts-grid" id="alertsContainer">
+            <div class="empty-state">
+                <div class="empty-icon">📊</div>
+                <h3 class="empty-title">Ready to analyze</h3>
+                <p class="empty-text">Click "Run Analysis" to scan NSE for market signals</p>
+            </div>
+        </div>
+
+        <div class="portfolio-section">
+            <h3 class="portfolio-title">Your Portfolio</h3>
+            <div class="holdings-grid" id="holdingsGrid">
+                <div class="holding-input">
+                    <input type="text" placeholder="Ticker" id="ticker1" value="RELIANCE">
+                    <input type="number" placeholder="Qty" id="qty1" value="50">
+                </div>
+                <div class="holding-input">
+                    <input type="text" placeholder="Ticker" id="ticker2" value="TCS">
+                    <input type="number" placeholder="Qty" id="qty2" value="30">
+                </div>
+                <div class="holding-input">
+                    <input type="text" placeholder="Ticker" id="ticker3" value="HDFCBANK">
+                    <input type="number" placeholder="Qty" id="qty3" value="40">
+                </div>
+            </div>
+        </div>
+
+        <div class="agents-section">
+            <div class="section-header">
+                <span class="section-title">Pipeline Agents</span>
+            </div>
+            <div class="agents-grid">
+                <div class="agent-card"><div class="agent-icon">📡</div><div class="agent-name">Data</div></div>
+                <div class="agent-card"><div class="agent-icon">📈</div><div class="agent-name">Signal</div></div>
+                <div class="agent-card"><div class="agent-icon">📚</div><div class="agent-name">Context</div></div>
+                <div class="agent-card"><div class="agent-icon">🧠</div><div class="agent-name">Reasoning</div></div>
+                <div class="agent-card"><div class="agent-icon">💼</div><div class="agent-name">Portfolio</div></div>
+                <div class="agent-card"><div class="agent-icon">🎯</div><div class="agent-name">Action</div></div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="disclaimer">
+            <strong>Disclaimer:</strong> SIGMA is an AI-powered research tool for informational purposes only.
+            It does not constitute licensed financial advice under SEBI regulations.
+            Consult a SEBI-registered investment advisor before acting on any recommendation.
+        </div>
+        <p class="footer-text">ET AI Hackathon 2026 • Powered by Groq LLM & LangGraph</p>
+    </footer>
 
     <script>
-        let holdingCount = 3;
-
         async function runPipeline() {
-            const btn = document.getElementById('runPipeline');
+            const btn = document.getElementById('runBtn');
             const container = document.getElementById('alertsContainer');
 
             btn.disabled = true;
-            btn.classList.add('loading');
             btn.innerHTML = '<div class="spinner"></div> Analyzing...';
 
             container.innerHTML = `
                 <div class="empty-state">
-                    <div class="spinner" style="margin: 0 auto 16px; width: 40px; height: 40px; border-width: 3px;"></div>
-                    <h3>Running Analysis Pipeline...</h3>
-                    <p>Scanning NSE data, detecting signals, applying reasoning...</p>
+                    <div class="spinner" style="margin: 0 auto 24px; width: 48px; height: 48px; border-width: 4px;"></div>
+                    <h3 class="empty-title">Running Pipeline...</h3>
+                    <p class="empty-text">Scanning NSE data, detecting signals, applying reasoning...</p>
                 </div>
             `;
 
             try {
-                // Build portfolio from inputs
                 const holdings = [];
-                for (let i = 1; i <= holdingCount; i++) {
+                for (let i = 1; i <= 3; i++) {
                     const ticker = document.getElementById(`ticker${i}`)?.value;
                     const qty = parseInt(document.getElementById(`qty${i}`)?.value) || 0;
                     if (ticker && qty > 0) {
-                        holdings.push({
-                            ticker: ticker.toUpperCase(),
-                            quantity: qty,
-                            avg_cost: 1000,
-                            current_price: 1000
-                        });
+                        holdings.push({ ticker: ticker.toUpperCase(), quantity: qty, avg_cost: 1000, current_price: 1000 });
                     }
                 }
 
                 const payload = holdings.length > 0 ? {
-                    portfolio: {
-                        user_id: "dashboard_user",
-                        holdings: holdings,
-                        total_value: holdings.reduce((sum, h) => sum + h.quantity * h.current_price, 0),
-                        tax_regime: "new"
-                    }
+                    portfolio: { user_id: "dashboard_user", holdings, total_value: holdings.reduce((s, h) => s + h.quantity * 1000, 0), tax_regime: "new" }
                 } : {};
 
                 const response = await fetch('/api/run-pipeline', {
@@ -593,72 +636,37 @@
                 });
 
                 const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || 'Pipeline failed');
 
-                if (!response.ok) {
-                    throw new Error(data.detail || 'Pipeline failed');
-                }
-
-                // Update stats
                 document.getElementById('signalCount').textContent = data.signal_count;
-                document.getElementById('pipelineTime').textContent =
-                    (data.pipeline_duration_ms / 1000).toFixed(1) + 's';
+                document.getElementById('pipelineTime').textContent = (data.pipeline_duration_ms / 1000).toFixed(1) + 's';
 
-                // Render alerts
-                if (data.alerts && data.alerts.length > 0) {
-                    container.innerHTML = data.alerts.map(alert => `
-                        <div class="alert-item">
-                            <div class="alert-header">
-                                <span class="alert-ticker">${alert.ticker}</span>
-                                <span class="alert-severity severity-${alert.severity}">${alert.severity}</span>
+                if (data.alerts?.length > 0) {
+                    container.innerHTML = data.alerts.map(a => `
+                        <div class="alert-card">
+                            <div class="alert-top">
+                                <span class="alert-ticker">${a.ticker}</span>
+                                <span class="severity-badge severity-${a.severity}">${a.severity}</span>
                             </div>
-                            <div class="alert-headline">${alert.headline}</div>
+                            <p class="alert-headline">${a.headline}</p>
                             <div class="alert-meta">
-                                <span>
-                                    Confidence:
-                                    <div class="confidence-bar">
-                                        <div class="confidence-fill" style="width: ${(alert.confidence_score * 100)}%"></div>
-                                    </div>
-                                    ${(alert.confidence_score * 100).toFixed(0)}%
-                                </span>
-                                <span>Action: ${alert.recommended_action?.substring(0, 50) || 'Monitor'}...</span>
+                                <div class="confidence-wrapper">
+                                    <span class="confidence-label">Confidence</span>
+                                    <div class="confidence-bar"><div class="confidence-fill" style="width:${a.confidence_score*100}%"></div></div>
+                                    <span class="confidence-value">${(a.confidence_score*100).toFixed(0)}%</span>
+                                </div>
                             </div>
                         </div>
                     `).join('');
                 } else {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">&#9989;</div>
-                            <h3>No significant signals detected</h3>
-                            <p>Markets appear stable. Check back later for updates.</p>
-                        </div>
-                    `;
+                    container.innerHTML = `<div class="empty-state"><div class="empty-icon">✓</div><h3 class="empty-title">No significant signals</h3><p class="empty-text">Markets appear stable.</p></div>`;
                 }
-
             } catch (error) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">&#9888;</div>
-                        <h3>Analysis Error</h3>
-                        <p>${error.message}</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠</div><h3 class="empty-title">Error</h3><p class="empty-text">${error.message}</p></div>`;
             } finally {
                 btn.disabled = false;
-                btn.classList.remove('loading');
-                btn.innerHTML = '<span>&#9654;</span> Run Analysis';
+                btn.innerHTML = '<span>▶</span> Run Analysis';
             }
-        }
-
-        function addHolding() {
-            holdingCount++;
-            const container = document.getElementById('holdingsContainer');
-            const div = document.createElement('div');
-            div.className = 'holding-item';
-            div.innerHTML = `
-                <input type="text" placeholder="Ticker" id="ticker${holdingCount}">
-                <input type="number" placeholder="Qty" id="qty${holdingCount}" style="width: 70px;">
-            `;
-            container.appendChild(div);
         }
     </script>
 </body>

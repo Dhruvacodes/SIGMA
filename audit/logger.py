@@ -1,12 +1,10 @@
 """
 SIGMA Audit Logger.
-Append-only audit log for full reproducibility.
+In-memory audit log for serverless deployment (Vercel has read-only filesystem).
 """
 
 import json
-import os
-from datetime import date, datetime
-from pathlib import Path
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -17,63 +15,49 @@ if TYPE_CHECKING:
 class SigmaAuditLogger:
     """
     Singleton audit logger that logs all agent outputs.
-
-    All agent outputs are logged here before being returned.
-    This is what makes the system "enterprise ready" — every alert is fully reproducible.
+    Uses in-memory storage for serverless compatibility.
     """
 
     _instance = None
 
-    def __new__(cls, log_dir: str = "./audit_logs"):
+    def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialized = False
         return cls._instance
 
-    def __init__(self, log_dir: str = "./audit_logs"):
+    def __init__(self):
         if self._initialized:
             return
         self._initialized = True
-
-        self.log_dir = Path(log_dir)
-        self.log_dir.mkdir(parents=True, exist_ok=True)
-        self._update_log_file()
-
-    def _update_log_file(self) -> None:
-        """Update log file path for current day."""
-        self.log_file = self.log_dir / f"sigma_audit_{date.today().isoformat()}.jsonl"
-
-    def _ensure_current_day(self) -> None:
-        """Ensure we're writing to today's log file."""
-        expected_file = self.log_dir / f"sigma_audit_{date.today().isoformat()}.jsonl"
-        if self.log_file != expected_file:
-            self._update_log_file()
+        self._logs: list[dict] = []
+        self._alerts: dict[str, dict] = {}
 
     def log_agent_run(self, agent_name: str, **kwargs) -> None:
         """Log an agent execution event."""
-        self._ensure_current_day()
         record = {
             "type": "agent_run",
             "agent": agent_name,
             "timestamp": datetime.now().isoformat(),
             **kwargs,
         }
-        self._append(record)
+        self._logs.append(record)
 
     def log_pipeline_run(self, final_state: "SigmaState") -> None:
         """Log complete pipeline execution with full state snapshot."""
-        self._ensure_current_day()
-
-        # Handle potential list of FinalAlert objects
         alerts = final_state.get("final_alerts", [])
         alerts_serialized = []
         for a in alerts:
             if hasattr(a, "model_dump"):
-                alerts_serialized.append(a.model_dump(mode="json"))
+                alert_dict = a.model_dump(mode="json")
+                alerts_serialized.append(alert_dict)
+                # Store for retrieval
+                self._alerts[alert_dict.get("alert_id", "")] = alert_dict
             else:
                 alerts_serialized.append(a)
+                if isinstance(a, dict) and "alert_id" in a:
+                    self._alerts[a["alert_id"]] = a
 
-        # Handle error log serialization
         errors = final_state.get("error_log", [])
         errors_serialized = []
         for e in errors:
@@ -98,49 +82,31 @@ class SigmaAuditLogger:
             "alerts": alerts_serialized,
             "audit_trail": final_state.get("audit_trail", []),
         }
-        self._append(record)
+        self._logs.append(record)
 
     def log_alert(self, alert: "FinalAlert") -> None:
         """Log individual alert with full reasoning trace."""
-        self._ensure_current_day()
         record = {
             "type": "alert",
             "alert_id": alert.alert_id,
             "ticker": alert.ticker,
-            "severity": alert.severity,
+            "severity": alert.severity.value if hasattr(alert.severity, 'value') else alert.severity,
             "confidence": alert.confidence_score,
             "reasoning_trace": alert.reasoning_trace,
             "sources": alert.sources,
-            "generated_at": alert.generated_at.isoformat(),
+            "generated_at": alert.generated_at.isoformat() if hasattr(alert.generated_at, 'isoformat') else str(alert.generated_at),
             "model_used": alert.model_used,
         }
-        self._append(record)
-
-    def _append(self, record: dict) -> None:
-        """Append a record to the log file."""
-        with open(self.log_file, "a", encoding="utf-8") as f:
-            f.write(json.dumps(record, default=str) + "\n")
+        self._logs.append(record)
+        self._alerts[alert.alert_id] = record
 
     def get_alerts_from_log(self, alert_id: str) -> dict | None:
         """Retrieve a specific alert from the audit log by alert_id."""
-        self._ensure_current_day()
-        if not self.log_file.exists():
-            return None
+        return self._alerts.get(alert_id)
 
-        with open(self.log_file, "r", encoding="utf-8") as f:
-            for line in f:
-                try:
-                    record = json.loads(line)
-                    if record.get("type") == "alert" and record.get("alert_id") == alert_id:
-                        return record
-                    # Also check in pipeline_run alerts
-                    if record.get("type") == "pipeline_run":
-                        for alert in record.get("alerts", []):
-                            if alert.get("alert_id") == alert_id:
-                                return alert
-                except json.JSONDecodeError:
-                    continue
-        return None
+    def get_recent_logs(self, limit: int = 100) -> list[dict]:
+        """Get recent log entries."""
+        return self._logs[-limit:]
 
 
 # Module-level singleton

@@ -1,383 +1,46 @@
-# SIGMA - Signal Intelligence & Guided Market Advisor
+# SIGMA
 
-![SIGMA Banner](https://img.shields.io/badge/SIGMA-AI%20for%20Indian%20Investors-blue?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3.11+-green?style=flat-square)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
-
-> **ET AI Hackathon 2026 — Track 6: AI for the Indian Investor**
-
-SIGMA is a production-grade multi-agent financial signal intelligence system designed for retail investors in India. It analyzes market signals, detects patterns, and provides AI-powered investment insights with full regulatory compliance.
-
-## Features
-
-- **Multi-Agent Architecture**: 6 specialized agents working in concert
-  - Data Agent: Real-time data ingestion from NSE, SEBI, and news sources
-  - Signal Agent: Technical pattern detection (52W breakouts, RSI, support/resistance)
-  - Context Agent: RAG-powered historical context enrichment
-  - Reasoning Agent: LLM-based Chain-of-Thought analysis
-  - Portfolio Agent: Personalized impact assessment
-  - Action Agent: Alert generation with guardrails
-
-- **Real-time Data Sources**
-  - NSE Bhavcopy and live quotes
-  - SEBI bulk/block deal filings
-  - Economic Times news RSS feed
-
-- **AI-Powered Analysis**
-  - Groq LLM integration (Llama 3.3 70B)
-  - ChromaDB Cloud for vector storage
-  - Historical pattern matching via RAG
-
-- **Regulatory Compliance**
-  - Mandatory disclaimers on all alerts
-  - No guaranteed return language
-  - Full audit trail for reproducibility
+> AI-powered multi-agent financial signal intelligence for Indian retail investors
 
 ---
 
-## Live API
+## 🚀 Live Demo
 
-**Base URL**: `https://sigma-<your-deployment>.vercel.app`
+**Dashboard:** https://sigma-flame-sigma.vercel.app/
 
-### API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/` | System info and documentation links |
-| `GET` | `/api/health` | Health check with system status |
-| `POST` | `/api/run-pipeline` | Run the full signal analysis pipeline |
-| `POST` | `/api/portfolio` | Store a user portfolio |
-| `GET` | `/api/portfolio/{user_id}` | Retrieve a stored portfolio |
-| `GET` | `/api/alerts/{alert_id}` | Get a specific alert by ID |
-| `POST` | `/api/seed-knowledge-base` | Seed the RAG knowledge base |
-| `WebSocket` | `/ws/alerts` | Real-time alert streaming |
+**Drive:** https://drive.google.com/drive/u/0/folders/1sespbmRXu1OTzT0GDuHj2Zi2H33pLZTV
 
 ---
 
-## Quick Start
+## What is SIGMA?
 
-### 1. Run the Pipeline
+A 6-agent AI system detecting market signals with chain-of-thought reasoning for actionable alerts.
 
-```bash
-curl -X POST "https://your-sigma-url.vercel.app/api/run-pipeline" \
-  -H "Content-Type: application/json" \
-  -d '{"portfolio": null}'
-```
-
-### 2. Run with Portfolio
-
-```bash
-curl -X POST "https://your-sigma-url.vercel.app/api/run-pipeline" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "portfolio": {
-      "user_id": "user123",
-      "holdings": [
-        {
-          "ticker": "INFY",
-          "exchange": "NSE",
-          "quantity": 100,
-          "avg_buy_price": 1500.0,
-          "current_price": 1650.0,
-          "purchase_date": "2024-01-15",
-          "sector": "IT"
-        },
-        {
-          "ticker": "HDFCBANK",
-          "exchange": "NSE",
-          "quantity": 50,
-          "avg_buy_price": 1600.0,
-          "current_price": 1720.0,
-          "purchase_date": "2023-06-01",
-          "sector": "Banking"
-        }
-      ],
-      "risk_profile": "MODERATE",
-      "last_updated": "2024-03-30T10:00:00"
-    }
-  }'
-```
-
-### 3. Check Health
-
-```bash
-curl "https://your-sigma-url.vercel.app/api/health"
-```
-
-### 4. WebSocket Alerts (JavaScript)
-
-```javascript
-const ws = new WebSocket('wss://your-sigma-url.vercel.app/ws/alerts');
-
-ws.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-
-  if (data.type === 'pipeline_started') {
-    console.log('Pipeline started...');
-  } else if (data.type === 'alert') {
-    console.log('Alert:', data.data);
-  } else if (data.type === 'pipeline_complete') {
-    console.log(`Complete! ${data.alert_count} alerts generated.`);
-  }
-};
-```
+| Agent | Role |
+|-------|------|
+| **Data** | NSE bulk deals, bhavcopy, ET news |
+| **Signal** | 52W breakouts, RSI, promoter deals |
+| **Context** | RAG enrichment with historical patterns |
+| **Reasoning** | Groq Llama 3.3 70B CoT analysis |
+| **Portfolio** | Personalized impact assessment |
+| **Action** | Alert generation with SEBI compliance |
 
 ---
 
-## Response Format
+## Tech Stack
 
-### Pipeline Response
+**LLM:** Groq (Llama 3.3 70B) • **Framework:** LangGraph + FastAPI • **RAG:** ChromaDB Cloud • **Deploy:** Vercel
 
-```json
-{
-  "alerts": [
-    {
-      "alert_id": "uuid",
-      "ticker": "INFY",
-      "severity": "OPPORTUNITY",
-      "headline": "OPPORTUNITY: INFY shows bullish signal (confidence: 72%)",
-      "signal_summary": "52-week breakout detected with strong volume confirmation",
-      "supporting_data": ["Volume ratio: 2.1x", "RSI: 65"],
-      "context_summary": "Historical success rate: 60%. Management sentiment: positive.",
-      "recommended_action": "Consider adding 3% of portfolio",
-      "confidence_score": 0.72,
-      "reasoning_trace": [...],
-      "disclaimer": "⚠️ DISCLAIMER: This alert is generated by an AI system...",
-      "generated_at": "2024-03-30T10:15:00"
-    }
-  ],
-  "pipeline_duration_ms": 3250.5,
-  "signal_count": 1
-}
-```
+---
 
-### Alert Severity Levels
+## API
 
-| Severity | Description |
+| Endpoint | Description |
 |----------|-------------|
-| `URGENT` | Bearish signal on held stock, high confidence - requires immediate attention |
-| `OPPORTUNITY` | Bullish signal, high confidence - potential entry point |
-| `WATCH` | Conflicting signals or medium confidence - monitor closely |
-| `INFORMATIONAL` | Low confidence or neutral - for awareness only |
+| `/` | Dashboard |
+| `/api/run-pipeline` | Run analysis (POST) |
+| `/docs` | Swagger docs |
 
 ---
 
-## Local Development
-
-### Prerequisites
-
-- Python 3.11+
-- pip
-
-### Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/Dhruvacodes/SIGMA.git
-cd SIGMA
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Download spaCy model
-python -m spacy download en_core_web_sm
-
-# Create .env file
-cp .env.example .env
-# Edit .env with your API keys
-```
-
-### Environment Variables
-
-```env
-# Required
-GROQ_API_KEY=your_groq_api_key
-CHROMA_API_KEY=your_chroma_api_key
-CHROMA_TENANT=your_tenant_id
-CHROMA_DATABASE=SIGMA
-
-# Optional
-LLM_PROVIDER=groq  # or "anthropic"
-OPENAI_API_KEY=your_openai_key  # for embeddings
-ANTHROPIC_API_KEY=your_anthropic_key  # if using anthropic
-```
-
-### Run Locally
-
-```bash
-# Start the API server
-python main.py
-
-# Or use uvicorn
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### Run Demo Scenarios
-
-```bash
-# Run all scenarios
-python demo.py
-
-# Run specific scenario
-python tests/scenario_runner.py --scenario 1  # Bulk Deal / Distress Sell
-python tests/scenario_runner.py --scenario 2  # Breakout with Conflicting Signals
-python tests/scenario_runner.py --scenario 3  # Portfolio-Aware Prioritisation
-```
-
----
-
-## Deploying to Vercel
-
-### 1. Fork/Clone this Repository
-
-### 2. Connect to Vercel
-
-1. Go to [vercel.com](https://vercel.com) and sign in
-2. Click "Add New Project"
-3. Import your GitHub repository
-4. Configure the project:
-   - Framework Preset: `Other`
-   - Root Directory: `./` (or `sigma` if in subdirectory)
-
-### 3. Add Environment Variables
-
-In Vercel project settings → Environment Variables, add:
-
-| Variable | Value |
-|----------|-------|
-| `GROQ_API_KEY` | Your Groq API key |
-| `CHROMA_API_KEY` | Your ChromaDB Cloud API key |
-| `CHROMA_TENANT` | Your ChromaDB tenant ID |
-| `CHROMA_DATABASE` | `SIGMA` |
-| `LLM_PROVIDER` | `groq` |
-| `USE_CHROMA_CLOUD` | `true` |
-
-### 4. Deploy
-
-Click "Deploy" and wait for the build to complete.
-
----
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      SIGMA Pipeline                          │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌──────────┐    ┌──────────┐    ┌──────────┐              │
-│  │   Data   │───▶│  Signal  │───▶│ Context  │              │
-│  │  Agent   │    │  Agent   │    │  Agent   │              │
-│  └──────────┘    └──────────┘    └──────────┘              │
-│       │                               │                     │
-│       ▼                               ▼                     │
-│  ┌──────────┐                   ┌──────────┐               │
-│  │   NSE    │                   │ ChromaDB │               │
-│  │   SEBI   │                   │   RAG    │               │
-│  │   News   │                   └──────────┘               │
-│  └──────────┘                         │                     │
-│                                       ▼                     │
-│                              ┌──────────────┐              │
-│                              │  Reasoning   │              │
-│                              │    Agent     │              │
-│                              │  (Groq LLM)  │              │
-│                              └──────────────┘              │
-│                                       │                     │
-│                                       ▼                     │
-│  ┌──────────┐               ┌──────────────┐              │
-│  │ Portfolio│◀──────────────│   Action     │              │
-│  │  Agent   │               │    Agent     │              │
-│  └──────────┘               └──────────────┘              │
-│       │                               │                     │
-│       ▼                               ▼                     │
-│  ┌──────────────────────────────────────────┐              │
-│  │              Final Alerts                 │              │
-│  │  (with disclaimers & audit trail)        │              │
-│  └──────────────────────────────────────────┘              │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Project Structure
-
-```
-sigma/
-├── main.py                 # FastAPI entry point
-├── orchestrator.py         # LangGraph pipeline
-├── config.py               # Configuration
-├── demo.py                 # Demo script
-├── vercel.json             # Vercel config
-├── requirements.txt        # Dependencies
-│
-├── agents/                 # The 6 agents
-│   ├── data_agent.py
-│   ├── signal_agent.py
-│   ├── context_agent.py
-│   ├── reasoning_agent.py
-│   ├── portfolio_agent.py
-│   └── action_agent.py
-│
-├── models/                 # Pydantic schemas
-│   ├── events.py
-│   ├── portfolio.py
-│   └── state.py
-│
-├── data/
-│   ├── ingestion/          # Data sources
-│   │   ├── nse_feed.py
-│   │   ├── sebi_filings.py
-│   │   └── et_news.py
-│   └── technical/          # Technical analysis
-│       ├── indicators.py
-│       └── patterns.py
-│
-├── rag/                    # RAG pipeline
-│   ├── vector_store.py
-│   ├── embeddings.py
-│   ├── retriever.py
-│   └── knowledge_base.py
-│
-├── api/                    # API layer
-│   ├── routes.py
-│   └── websocket.py
-│
-├── audit/                  # Audit logging
-│   └── logger.py
-│
-└── tests/                  # Test harness
-    └── scenario_runner.py
-```
-
----
-
-## Disclaimer
-
-⚠️ **IMPORTANT**: SIGMA is an AI-powered research tool for informational purposes only. It does not constitute licensed financial advice under SEBI/PMLA regulations. Past signal performance does not guarantee future results. All investment decisions are the sole responsibility of the investor. Consult a SEBI-registered investment advisor before acting on any recommendation.
-
----
-
-Drive link: https://drive.google.com/drive/u/0/folders/1sespbmRXu1OTzT0GDuHj2Zi2H33pLZTV
-
-## License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
----
-
-## Acknowledgments
-
-- **ET AI Hackathon 2026** - Track 6: AI for the Indian Investor
-- **Groq** - Fast LLM inference
-- **ChromaDB** - Vector database
-- **LangGraph** - Agent orchestration
-
----
-
-Built with ❤️ for Indian Retail Investors
+**ET AI Hackathon 2026** | Built by Dhruva
